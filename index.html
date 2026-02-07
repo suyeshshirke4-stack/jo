@@ -4,9 +4,286 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Propose Day 💖</title>
-<!-- (Content exactly as provided by user, unchanged) -->
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{
+  height:100vh;
+  overflow:hidden;
+  background:radial-gradient(circle at top,#2a002a,#000);
+  color:white;
+}
+
+/* 🌸 Background Hearts */
+.heart{
+  position:fixed;
+  bottom:-20px;
+  font-size:20px;
+  animation:float 10s linear infinite;
+  opacity:0.6;
+}
+@keyframes float{
+  0%{transform:translateY(0) scale(1);opacity:0}
+  100%{transform:translateY(-120vh) scale(1.8);opacity:1}
+}
+
+/* 🌹 Rose Petals */
+.petal{
+  position:fixed;
+  top:-20px;
+  font-size:18px;
+  animation:fall 12s linear infinite;
+  opacity:0.7;
+}
+@keyframes fall{
+  to{transform:translateY(120vh) rotate(360deg)}
+}
+
+/* 🌟 Sparkle */
+.sparkle{
+  position:fixed;
+  width:4px;height:4px;
+  background:white;
+  border-radius:50%;
+  animation:twinkle 3s infinite;
+}
+@keyframes twinkle{
+  0%,100%{opacity:0}
+  50%{opacity:1}
+}
+
+/* MAIN SCREEN */
+.screen{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  text-align:center;
+  animation:fadeIn 2s ease;
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:scale(0.9)}
+  to{opacity:1;transform:scale(1)}
+}
+
+.proposal{
+  font-size:1.05rem;
+  font-weight:700;
+  line-height:1.6;
+  margin-bottom:30px;
+  text-shadow:0 0 15px pink;
+}
+
+/* Buttons */
+.buttons{
+  display:flex;
+  gap:20px;
+}
+button{
+  padding:14px 28px;
+  border:none;
+  border-radius:30px;
+  font-size:1.1rem;
+  cursor:pointer;
+  transition:0.3s;
+}
+#yes{
+  background:#ff4d88;
+  color:white;
+  box-shadow:0 0 20px #ff4d88;
+}
+#no{
+  background:#444;
+  color:white;
+  position:relative;
+}
+
+/* LETTER PAGE */
+.letter-page{
+  display:none;
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to bottom,#140014,#000);
+  padding:20px;
+  text-align:center;
+  animation:fadeIn 2s ease;
+}
+.letter-box{
+  margin-top:40px;
+  padding:20px;
+  background:rgba(255,255,255,0.08);
+  border-radius:20px;
+  box-shadow:0 0 30px pink;
+}
+.letter-box h2{
+  font-size:1.1rem;
+  margin-bottom:15px;
+}
+
+/* Small Letters */
+.envelopes{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:25px;
+}
+.env{
+  background:rgba(255,255,255,0.1);
+  border-radius:15px;
+  padding:15px;
+  cursor:pointer;
+  animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+  from{box-shadow:0 0 5px pink}
+  to{box-shadow:0 0 20px pink}
+}
+
+/* Popup */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+.popup-content{
+  background:white;
+  color:#333;
+  padding:25px;
+  border-radius:20px;
+  width:85%;
+  text-align:center;
+  animation:fadeIn 0.8s ease;
+}
+.popup-content span{
+  font-size:2rem;
+}
+</style>
 </head>
+
 <body>
-<p>Your full HTML content goes here. Paste the provided code exactly.</p>
+
+<!-- 🎵 MUSIC -->
+<audio autoplay loop>
+  <source src="soft_romantic.mp3" type="audio/mpeg">
+</audio>
+
+<div class="screen" id="main">
+  <div class="proposal">
+    I want to be honest with you. I like you a lot.  
+    I admire your nature, your smile.  
+    And you mean more to me than I can put into words.  
+    I don’t know what the future holds.  
+    I’d love to get closer to you and build something meaningful together ❤️
+  </div>
+
+  <div class="buttons">
+    <button id="yes">YES</button>
+    <button id="no">NO</button>
+  </div>
+</div>
+
+<!-- LETTER PAGE -->
+<div class="letter-page" id="letterPage">
+  <div class="letter-box">
+    <h2>❤️ A PERSON IS LIKE A BOOK ❤️<br>
+    To understand what's inside, you have to open and read it.<br>
+    I want to read you — page by page, line by line, word by word.</h2>
+
+    <p>Tap the letters below ✉️</p>
+
+    <div class="envelopes">
+      <div class="env" onclick="openMsg(0)">💌</div>
+      <div class="env" onclick="openMsg(1)">💌</div>
+      <div class="env" onclick="openMsg(2)">💌</div>
+      <div class="env" onclick="openMsg(3)">💌</div>
+      <div class="env" onclick="openMsg(4)">💌</div>
+      <div class="env" onclick="openMsg(5)">💌</div>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup" onclick="this.style.display='none'">
+  <div class="popup-content">
+    <span>❤️</span>
+    <p id="popupText"></p>
+  </div>
+</div>
+
+<script>
+/* Floating hearts */
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="heart";
+  h.innerText="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=14+Math.random()*20+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),10000);
+},400);
+
+/* Petals */
+setInterval(()=>{
+  let p=document.createElement("div");
+  p.className="petal";
+  p.innerText="🌹";
+  p.style.left=Math.random()*100+"vw";
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),12000);
+},800);
+
+/* Sparkles */
+setInterval(()=>{
+  let s=document.createElement("div");
+  s.className="sparkle";
+  s.style.left=Math.random()*100+"vw";
+  s.style.top=Math.random()*100+"vh";
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),3000);
+},300);
+
+/* NO button run */
+const no=document.getElementById("no");
+no.addEventListener("mouseenter",moveNo);
+no.addEventListener("touchstart",moveNo);
+function moveNo(){
+  no.style.position="absolute";
+  no.style.left=Math.random()*80+"vw";
+  no.style.top=Math.random()*80+"vh";
+}
+
+/* YES grow */
+const yes=document.getElementById("yes");
+let scale=1;
+yes.addEventListener("mouseenter",()=>{scale+=0.2;yes.style.transform=`scale(${scale})`});
+yes.addEventListener("touchstart",()=>{scale+=0.2;yes.style.transform=`scale(${scale})`});
+
+/* Open letter page */
+yes.onclick=()=>{
+  document.getElementById("main").style.display="none";
+  document.getElementById("letterPage").style.display="block";
+};
+
+/* Messages */
+const msgs=[
+"Love is not about perfection, it’s about choosing each other every day.",
+"Understanding grows when two hearts listen without judging.",
+"Trust is built when words and actions walk together.",
+"Love becomes strong when respect stays constant.",
+"Real connection is feeling safe being your true self.",
+"A meaningful relationship is built with patience, care, and honesty."
+];
+function openMsg(i){
+  document.getElementById("popupText").innerText=msgs[i];
+  document.getElementById("popup").style.display="flex";
+}
+</script>
+
 </body>
 </html>
